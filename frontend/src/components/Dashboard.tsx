@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getSensorData } from "../services/api";
 import SensorChart from "./SensorChart";
+import Gauge from "./Gauge";
 
 interface SensorData {
   timestamp: string;
@@ -32,9 +33,47 @@ export default function Dashboard() {
   const vibrations = history.map((d) => d.vibration);
   const pressures = history.map((d) => d.pressure);
 
+  // latest sensor values for gauges
+  const latestData = history[history.length - 1] || {
+    temperature: 0,
+    vibration: 0,
+    pressure: 0,
+  };
+
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
       <h1>Sensor Dashboard</h1>
+
+      {/* Gauges section */}
+      <div
+        style={{
+          display: "flex",
+          gap: "2rem",
+          justifyContent: "center",
+          marginBottom: "2rem",
+        }}
+      >
+        <Gauge
+          label="Temperature (°C)"
+          value={latestData.temperature}
+          min={-20}
+          max={100}
+        />
+        <Gauge
+          label="Vibration"
+          value={latestData.vibration}
+          min={0}
+          max={1.5}
+        />
+        <Gauge
+          label="Pressure (kPa)"
+          value={latestData.pressure}
+          min={30}
+          max={100}
+        />
+      </div>
+
+      {/* Charts section */}
       <div
         style={{
           display: "grid",
